@@ -5,6 +5,15 @@ const mongoose = require('mongoose');
 
 const PostSchema = new mongoose.Schema(
     {
+        creator: {
+            type: String,
+            required: true,
+            max: 20
+        },
+        registerId: {
+            type: String,
+            required: true,
+        },
         body: {
             type: String,
             required: true,

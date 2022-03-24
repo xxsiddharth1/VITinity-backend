@@ -5,7 +5,7 @@ const passport = require('passport');
 
 
 postRouter.post('/upload', passport.authenticate('jwt', {session: false}), (req,res)=>{
-    const post = new Post({body: req.body.body});
+    const post = new Post({creator: req.body.creator, registerId: req.body.registerId, body: req.body.body});
     post.save(err=>{
         if(err)
             res.status(500).json({

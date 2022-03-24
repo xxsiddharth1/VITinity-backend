@@ -7,6 +7,9 @@ const postRouter = require('./routes/post');
 
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
 
 const options_mongoDb = {
     useNewUrlParser: true,
@@ -15,9 +18,10 @@ const options_mongoDb = {
 
 require('dotenv').config();
 
-app.use(express.json());
-app.use(cors());
-app.use(cookieParser());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 app.use('/api/user', userRouter);
 app.use('/api/post',postRouter);
 

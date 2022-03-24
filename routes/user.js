@@ -7,11 +7,11 @@ const config = require('../passport');
 
 
 
-const signToken = userId=>{
+const signToken = userId => {
     return JWT.sign({
         iss: "IshaanPare",
         sub: userId
-    }, "IshaanPare", {expiresIn: "1h"});
+    },"IshaanPare",{expiresIn: "1h"});
 }
 
 userRouter.post('/register', (req,res)=>{
@@ -51,18 +51,16 @@ userRouter.post('/register', (req,res)=>{
                     });
             })
         }
-            
-
-        
     })
 
 });
 
 userRouter.post('/login', passport.authenticate('local', {session: false}), (req,res)=>{
     if (req.isAuthenticated()){
-        const {_id, regId, username} = req.user;
+        const {_id, username, regId} = req.user;
         const token = signToken(_id);
-        res.cookie('access_token', token, {httpOnly: true, sameSite: true});
+        console.log(token);
+        res.cookie('access_token', token, {httpOnly: false, sameSite: true});
         res.status(200).json({isAuthenticated: true, user: {username, regId}});
     }
 });
@@ -73,8 +71,8 @@ userRouter.get('/logout', passport.authenticate('jwt', {session: false}), (req, 
 });
 
 userRouter.get('/authenticated',passport.authenticate('jwt',{session: false}),(req,res)=>{
-    const {username,regId} = req.user;
-    res.status(200).json({isAuthenticated: true,user: {username,regId}});
+    const {_id,username,regId} = req.user;
+    res.status(200).json({isAuthenticated: true,user: {_id,username,regId}});//does putting here id usefull
 });
 
 
