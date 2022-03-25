@@ -5,8 +5,6 @@ const JWT = require('jsonwebtoken');
 const Post = require('../models/Post');
 const config = require('../passport');
 
-
-
 const signToken = userId => {
     return JWT.sign({
         iss: "IshaanPare",
