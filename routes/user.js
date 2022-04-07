@@ -73,8 +73,4 @@ userRouter.get('/authenticated',passport.authenticate('jwt',{session: false}),(r
     res.status(200).json({isAuthenticated: true,user: {_id,username,regId}});//does putting here id usefull
 });
 
-
-
-
-
 module.exports = userRouter;
