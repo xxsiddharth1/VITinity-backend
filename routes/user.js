@@ -69,8 +69,8 @@ userRouter.get('/logout', passport.authenticate('jwt', {session: false}), (req, 
 });
 
 userRouter.get('/authenticated',passport.authenticate('jwt',{session: false}),(req,res)=>{
-    const {_id,username,regId} = req.user;
-    res.status(200).json({isAuthenticated: true,user: {_id,username,regId}});//does putting here id usefull
+    const {_id,username,regId,isAdmin} = req.user;
+    res.status(200).json({isAuthenticated: true,user: {_id,username,regId,isAdmin}});//does putting here id usefull
 });
 
 module.exports = userRouter;
