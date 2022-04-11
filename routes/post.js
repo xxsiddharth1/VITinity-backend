@@ -87,5 +87,37 @@ postRouter.delete('/:id', passport.authenticate('jwt', { session: false }),(req,
 
 });
 
+postRouter.put('/upvote/:id', passport.authenticate('jwt', {session: false}), (req,res)=>{
+    //todo we will be handle the multiple likes by one person in frontend for sake of time
+    Post.findByIdAndUpdate(req.params.id, {$inc: { likes: 1 }, $push: {voted: req.user["id"]}}, (err)=>{
+        if (err)
+            res.status(500).json({
+                message: "Error occured",
+                msgError: true
+            })
+        else 
+            res.status(200).json({
+                message: "Upvote",
+                msgError: false
+            })
+    })
+});
+
+
+postRouter.put('/downvote/:id', passport.authenticate('jwt', {session: false}), (req,res)=>{
+    //todo we will be handle the multiple likes by one person in frontend for sake of time
+    Post.findByIdAndUpdate(req.params.id, {$inc: { likes: -1 }, $push: {voted: req.user["id"]}}, (err)=>{
+        if (err)
+            res.status(500).json({
+                message: "Error occured",
+                msgError: true
+            })
+        else 
+            res.status(200).json({
+                message: "Downvote",
+                msgError: false
+            })
+    })
+});
 
 module.exports = postRouter;
