@@ -4,7 +4,6 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const userRouter = require('./routes/user');
 const postRouter = require('./routes/post');
-const noticeRouter = require('./routes/notice');
 
 const app = express();
 app.use(express.json());
@@ -23,8 +22,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use('/api/user', userRouter);
-app.use('/api/post',postRouter);
-app.use('/api/admin', noticeRouter);
+app.use('/api/post', postRouter);
 
 mongoose.connect(process.env.DB_URL, options_mongoDb, ()=>{
 

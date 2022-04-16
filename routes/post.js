@@ -3,6 +3,7 @@ const Post = require('../models/Post');
 const config = require('../passport');
 const passport = require('passport');
 const User = require('../models/User');
+const Notice = require('../models/Notice');
 
 
 postRouter.post('/upload', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -119,5 +120,40 @@ postRouter.put('/downvote/:id', passport.authenticate('jwt', {session: false}), 
             })
     })
 });
+
+
+//notice routes 
+
+
+postRouter.post('/notice', passport.authenticate('jwt', { session: false }), (req, res) => {
+    const notice = new Notice({ creator: req.body.creator, body: req.body.body });
+    notice.save(err => {
+        if (err)
+            res.status(500).json({
+                message: {
+                    msgBody: "Error has occured"
+                },
+                msgError: true
+            });
+        else {
+            res.status(200).json({
+                message: {
+                    msgBody: "Succesfully created a post",
+                    msgError: false
+                }
+            });
+    
+        }
+    });
+});
+
+
+postRouter.get('/getallnotices', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Notice.find({ category: "Database" })
+        .then(data => {
+            res.status(200).json(data);
+        });
+})
+
 
 module.exports = postRouter;
