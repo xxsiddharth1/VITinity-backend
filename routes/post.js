@@ -121,6 +121,13 @@ postRouter.put('/downvote/:id', passport.authenticate('jwt', {session: false}), 
     })
 });
 
+//aggregate functions for post
+
+postRouter.get("/numpost", passport.authenticate('jwt', {session: false}), (req,res)=>{
+    Post.countDocuments({})
+        .then(data=>res.status(200).json({count: data}));
+})
+
 
 //notice routes 
 
@@ -153,6 +160,13 @@ postRouter.get('/getallnotices', passport.authenticate('jwt', { session: false }
         .then(data => {
             res.status(200).json(data);
         });
+});
+
+//aggregate function for notice postRouter
+
+postRouter.get("/numnotice", passport.authenticate('jwt', {session: false}), (req,res)=>{
+    Notice.countDocuments({})
+        .then(data=>res.status(200).json({count: data}));
 })
 
 

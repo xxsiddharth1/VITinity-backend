@@ -73,4 +73,12 @@ userRouter.get('/authenticated',passport.authenticate('jwt',{session: false}),(r
     res.status(200).json({isAuthenticated: true,user: {_id,username,regId,isAdmin}});//does putting here id usefull
 });
 
+
+//aggregate function for user
+userRouter.get("/numuser", passport.authenticate('jwt', {session: false}), (req, res)=>{
+    User.countDocuments({}).then(data=>{
+        res.status(200).json({"count":data});
+    });
+})
+
 module.exports = userRouter;
