@@ -73,6 +73,12 @@ userRouter.get('/authenticated',passport.authenticate('jwt',{session: false}),(r
     res.status(200).json({isAuthenticated: true,user: {_id,username,regId,isAdmin}});//does putting here id usefull
 });
 
+userRouter.get('/admins', passport.authenticate('jwt', {session: false}), (req,res)=>{
+    User.find({isAdmin: true}, {regId:1})
+        .then(data=>{
+            res.status(200).json(data);
+        })
+})
 
 //aggregate function for user
 userRouter.get("/numuser", passport.authenticate('jwt', {session: false}), (req, res)=>{
