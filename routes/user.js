@@ -16,42 +16,57 @@ const signToken = userId => {
 userRouter.post('/register', (req,res)=>{
     const {regId, username, password} = req.body;
 
-    User.findOne({regId}, (err,user)=>{
-        if (err)
-            res.status(500).json({
+
+    Authusers.findOne({registerId: regId}, (err,user)=>{
+
+        if (user == null) {
+            res.status(404).json({
                 message: {
-                    msgBody: "Error has occured"
-                },
-                msgError: true
-            });
-        if (user)
-            res.status(400).json({
-                message: {
-                    msgBody: "Already have an account"
-                },
-                msgError: true
-            });
+                    msgBody: "Not from our university contact the admin",
+                    msgError: true
+                }
+            })
+
+        }
         else {
-            const newUser = new User({regId,username,password});
-            newUser.save(err=>{
+
+            User.findOne({regId}, (err,user)=>{
                 if (err)
                     res.status(500).json({
                         message: {
-                            msgBody: "Error has occured"
+                            msgBody: err
                         },
                         msgError: true
                     });
-                else
-                    res.status(201).json({
+                if (user)
+                    res.status(400).json({
                         message: {
-                            msgBody: "Account created succesfully"
+                            msgBody: "Already have an account"
                         },
-                        msgError: false
+                        msgError: true
                     });
+                else {
+                    const newUser = new User({regId,username,password});
+                    newUser.save(err=>{
+                        if (err)
+                            res.status(500).json({
+                                message: {
+                                    msgBody: "Error has occured server side"
+                                },
+                                msgError: true
+                            });
+                        else
+                            res.status(201).json({
+                                message: {
+                                    msgBody: "Account created succesfully"
+                                },
+                                msgError: false
+                            });
+                    })
+                }
             })
         }
     })
-
 });
 
 userRouter.post('/login', passport.authenticate('local', {session: false}), (req,res)=>{
@@ -124,21 +139,11 @@ userRouter.post('/newuser', passport.authenticate('jwt', {session: false}), (req
 });
 
 userRouter.get('/allauthusers', passport.authenticate('jwt', {session: false}), (req,res)=>{
+    Authusers.find({})
+        .then((data)=>{
+            res.status(200).json(data);
 
-    if (req.user["isAdmin"])
-        Authusers.find({})
-            .then((data)=>{
-                res.status(200).json(data);
-
-            })
-
-    else
-            res.status(401).json({
-                message: {
-                    msgBody: "Not a right person",
-                    msgError: true
-                }
-            })
+        });
 })
 
 module.exports = userRouter;
