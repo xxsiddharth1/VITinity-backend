@@ -4,6 +4,7 @@ const passport = require('passport');
 const JWT = require('jsonwebtoken');
 const Post = require('../models/Post');
 const config = require('../passport');
+const Authusers = require('../models/Authusers');
 
 const signToken = userId => {
     return JWT.sign({
@@ -85,6 +86,59 @@ userRouter.get("/numuser", passport.authenticate('jwt', {session: false}), (req,
     User.countDocuments({}).then(data=>{
         res.status(200).json({"count":data});
     });
+});
+
+
+//add user into db entries (authorizing of users);
+userRouter.post('/newuser', passport.authenticate('jwt', {session: false}), (req,res)=>{
+    const newUser = new Authusers({registerId: req.body.registerId, username: req.body.username});
+
+    if (req.user["isAdmin"]) {
+        newUser.save(err=>{
+            if (err) 
+                res.status(500).json({
+                    message: {
+                        msgBody: "error has occered while saving doc",
+                        msgError: true
+                    }
+                })
+            
+            else
+                res.status(200).json({
+                    message: {
+                        msgBody: "Successfully added new user to list",
+                        msgError: false
+                    }
+                })
+            }
+        )
+    }
+    else{
+        res.status(401).json({
+            message: {
+                msgBody: "Not a right person",
+                msgError: true
+            }
+        })
+    }
+});
+
+userRouter.get('/allauthusers', passport.authenticate('jwt', {session: false}), (req,res)=>{
+
+    if (req.user["isAdmin"])
+        Authusers.find({})
+            .then((data)=>{
+                res.status(200).json(data);
+
+            })
+
+    else
+            res.status(401).json({
+                message: {
+                    msgBody: "Not a right person",
+                    msgError: true
+                }
+            })
 })
 
 module.exports = userRouter;
