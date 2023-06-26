@@ -1,2 +1,2 @@
 # VITinity
-Community application for students of VIT bhopal.
+Community application for students of VIT Bhopal.
